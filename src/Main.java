@@ -4,19 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Main {
     static final String CSV_FILENAME = "C:\\Users\\aikak\\Downloads\\Задача ВС Java Сбер (1).csv";
 
     public static void main(String[] args) throws FileNotFoundException {
         ArrayList<City> cityList = readFileConsolWrite(CSV_FILENAME);
-        showCityList(cityList);
-        cityList = sortByName(cityList);
-        System.out.println('\n'+"Sorted by name");
-        showCityList(cityList);
-        cityList = sortByNameAndRegion(cityList);
-        System.out.println('\n'+"Sorted by name and region");
-        showCityList(cityList);
+        showRegionsCityCount(cityList);
 
     }
 
@@ -45,12 +41,30 @@ public class Main {
         Comparator<City> comparator = Comparator.comparing(city -> city.getName().toLowerCase());
         return sortList(cityList,comparator);
     }
-
     public static ArrayList<City> sortByNameAndRegion(ArrayList<City> cityList) {
         Comparator<City> comparator = Comparator.comparing(City::getDistrict);
         comparator = comparator.thenComparing(City::getName);
         return sortList(cityList,comparator);
     }
-
-
+    public static void findMaxPopulation(ArrayList<City> cityList){
+        City[] citiesArray = cityList.toArray(City[]::new);
+        int maxPopulation = Integer.MIN_VALUE, maxIndex = Integer.MAX_VALUE;
+        for (int i = 0; i < citiesArray.length; i++) {
+            if (maxPopulation < citiesArray[i].getPopulation()) {
+                maxIndex = i;
+            }
+        }
+        System.out.println("Index city with max population:");
+        System.out.println("[" + maxIndex + "] = " + citiesArray[maxIndex].getPopulation());
+    }
+    private static void showRegionsCityCount(ArrayList<City> cityList) {
+        System.out.println("Regions city count:");
+        cityList.stream().map(city -> city.getRegion())
+                .collect(
+                        Collectors.groupingBy(
+                                Function.identity(), Collectors.counting()
+                        )
+                )
+                .forEach((region, count) -> System.out.println(region + " - " + count));
+    }
 }
