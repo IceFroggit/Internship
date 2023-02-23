@@ -18,7 +18,7 @@ public class Main {
 
     public static ArrayList<City> readFileConsolWrite(String filename) throws FileNotFoundException {
         Scanner sc = new Scanner(new File(filename));
-        ArrayList<City> cityList = new ArrayList();
+        ArrayList<City> cityList = new ArrayList<>();
         while (sc.hasNextLine()) {
             String[] line = sc.nextLine().split(";");
             City city = new City(line);
@@ -33,9 +33,7 @@ public class Main {
         }
     }
     public static ArrayList<City> sortList(ArrayList<City> cityList, Comparator<City> comparator) {
-        ArrayList<City> result = new ArrayList<City>();
-        result.addAll(cityList.stream().sorted(comparator).toList());
-        return result;
+        return new ArrayList<>(cityList.stream().sorted(comparator).toList());
     }
     public static ArrayList<City> sortByName(ArrayList<City> cityList) {
         Comparator<City> comparator = Comparator.comparing(city -> city.getName().toLowerCase());
@@ -59,7 +57,7 @@ public class Main {
     }
     private static void showRegionsCityCount(ArrayList<City> cityList) {
         System.out.println("Regions city count:");
-        cityList.stream().map(city -> city.getRegion())
+        cityList.stream().map(City::getRegion)
                 .collect(
                         Collectors.groupingBy(
                                 Function.identity(), Collectors.counting()
